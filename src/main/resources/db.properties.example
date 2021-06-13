@@ -1,0 +1,6 @@
+jdbc.driverClassName=com.mysql.cj.jdbc.Driver
+jdbc.url=jdbc:mysql://******/DATABASE_NAME
+jdbc.username=USERNAME
+jdbc.password=PASSWORD
+hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+hibernate.show_sql=false

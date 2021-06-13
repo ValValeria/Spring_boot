@@ -1,21 +1,37 @@
 package com.example.webapp.models;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.*;
+import com.example.webapp.models.Ad;
+import com.sun.istack.NotNull;
 
 @Entity
 @Table(name="spring_users",schema="1oASotOvGd")
 public class User {
+    @Id
+    @GeneratedValue
     private Long id;
+
+    @Column
     private String email;
+
+    @Column
     private String password;
+
+    @Column
+    private String username;
+
+    @Column
+    private String role;
+
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, targetEntity=Ad.class)
+    private List<Ad> ads = new ArrayList<>();
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Id
     public Long getId() {
         return id;
     }
@@ -34,5 +50,27 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setRole(String role){
+        String[] allowedRoles = {"user", "admin"};
+
+        if(Arrays.binarySearch(allowedRoles, role) == -1){
+            throw new IllegalArgumentException();
+        } else {
+            this.role = role;
+        }
+    }
+
+    public String getRole(){
+        return this.role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
