@@ -1,12 +1,13 @@
 package com.example.webapp.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="spring_ads",schema="1oASotOvGd")
+@Table(name="spring_ads")
 public class Ad {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -14,12 +15,14 @@ public class Ad {
     private User user;
 
     @Column
+    @Size(min=10, max=30)
     private String title;
 
     @Column
     private String image;
 
     @Column
+    @Size(min=30, max=300)
     private String description;
 
     public int getId() {

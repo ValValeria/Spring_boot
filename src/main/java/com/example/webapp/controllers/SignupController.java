@@ -62,17 +62,22 @@ public class SignupController {
                 setUpRedirect(baseUrl, httpServletResponse, "error", "");
             } else {
                 user.setRole("user");
+                user.setPassword(user.getPassword());
+
+                iUserRepository.save(user);
 
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 Collection<GrantedAuthority> authorityCollection = new ArrayList<>();
                 authorityCollection.add(new SimpleGrantedAuthority(user.getRole()));
 
                 Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(user.getUsername(), new BCryptPasswordEncoder().encode(user.getPassword()), authorityCollection);
+                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), authorityCollection);
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);
 
                 httpServletResponse.sendRedirect("/admin");
+
+                logger.info("Authentication is successful");
             }
         } else {
             setUpRedirect(baseUrl, httpServletResponse, "inputError", "");

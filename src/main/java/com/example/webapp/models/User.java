@@ -3,13 +3,12 @@ package com.example.webapp.models;
 import javax.persistence.*;
 import java.util.*;
 import com.example.webapp.models.Ad;
-import com.sun.istack.NotNull;
 
 @Entity
 @Table(name="spring_users",schema="1oASotOvGd")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

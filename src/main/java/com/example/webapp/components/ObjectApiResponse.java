@@ -1,7 +1,7 @@
 package com.example.webapp.components;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -43,8 +43,9 @@ public class ObjectApiResponse {
 
     public String toJson(){
         try{
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.writeValueAsString(this);
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            return gson.toJson(this);
         }catch(Throwable e){
             return null;
         }
