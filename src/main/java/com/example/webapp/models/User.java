@@ -2,10 +2,11 @@ package com.example.webapp.models;
 
 import javax.persistence.*;
 import java.util.*;
-import com.example.webapp.models.Ad;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name="spring_users",schema="1oASotOvGd")
+@JsonIgnoreProperties(value = { "password", "email"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +24,7 @@ public class User {
     @Column
     private String role;
 
-    @OneToMany(mappedBy="user", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy="user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, targetEntity=Ad.class)
     private List<Ad> ads = new ArrayList<>();
 
@@ -71,5 +72,9 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<Ad> getAds(){
+        return ads;
     }
 }

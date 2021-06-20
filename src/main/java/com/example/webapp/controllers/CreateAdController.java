@@ -8,6 +8,7 @@ import com.example.webapp.repositories.IUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.stereotype.Controller;
@@ -35,15 +36,18 @@ public class CreateAdController{
     private final ObjectApiResponse objectApiResponse;
     private IAdRepository adRepository;
     private IUserRepository userRepository;
+    private ConversionService conversionService;
     Logger logger = LoggerFactory.getLogger(SignupController.class);
 
     @Autowired
     CreateAdController(ObjectApiResponse objectApiResponse,
                        IAdRepository adRepository,
+                       ConversionService conversionService,
                        IUserRepository iUserRepository){
         this.objectApiResponse = objectApiResponse;
         this.adRepository = adRepository;
         this.userRepository = iUserRepository;
+        this.conversionService = conversionService;
     }
 
     @GetMapping("")
@@ -83,8 +87,10 @@ public class CreateAdController{
             }
         }
 
+        response.setContentType("application/json");
+
         PrintWriter printWriter = response.getWriter();
-        printWriter.write(this.objectApiResponse.toJson());
+        printWriter.write(this.conversionService.convert(objectApiResponse, String.class));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -98,6 +104,6 @@ public class CreateAdController{
 
         this.objectApiResponse.setErrors(stringList);
 
-        return this.objectApiResponse.toJson();
+        return  this.conversionService.convert(objectApiResponse, String.class);
     }
 }

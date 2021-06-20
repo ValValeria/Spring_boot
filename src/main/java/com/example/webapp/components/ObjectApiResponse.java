@@ -40,14 +40,4 @@ public class ObjectApiResponse {
     public void setData(Map<String, Object> data) {
         this.data = data;
     }
-
-    public String toJson(){
-        try{
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.create();
-            return gson.toJson(this);
-        }catch(Throwable e){
-            return null;
-        }
-    }
 }

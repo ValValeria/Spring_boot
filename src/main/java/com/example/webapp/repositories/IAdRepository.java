@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface IAdRepository extends JpaRepository<Ad, Integer> {
-    @Query("select u from Ad u where u.user.id = :user_id")
-    List<Ad> findAdsRelatedToUser(@Param("user_id")int id, Pageable pageable);
+    @Query("select u from Ad u where u.user.username = :author")
+    List<Ad> findAdsRelatedToUser(@Param("author") String author, Pageable pageable);
     Ad findAdById(int id);
 }

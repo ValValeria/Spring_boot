@@ -6,14 +6,13 @@ import com.example.webapp.models.User;
 import com.example.webapp.repositories.IAdRepository;
 import com.example.webapp.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
 import java.util.List;
 import java.util.Map;
 
@@ -23,25 +22,26 @@ public class ViewAdsController {
     private final IAdRepository iAdRepository;
     private final ObjectApiResponse objectApiResponse;
     private final IUserRepository userRepository;
+    private final ConversionService conversionService;
 
     @Autowired
     public ViewAdsController(IAdRepository iAdRepository,
                       ObjectApiResponse objectApiResponse,
-                      IUserRepository userRepository
+                      IUserRepository userRepository,
+                      ConversionService conversionService
                       ){
         this.iAdRepository = iAdRepository;
         this.objectApiResponse = objectApiResponse;
         this.userRepository = userRepository;
+        this.conversionService = conversionService;
     }
     
     @GetMapping("/api/ads")
     @ResponseBody
     private String viewAds(Pageable pageable){
-        Page<Ad> page = this.iAdRepository.findAll(pageable);
+        this.objectApiResponse.setData(Map.of("pagination", this.iAdRepository.findAll(pageable)));
 
-        this.objectApiResponse.setData(Map.of("ads", page));
-
-        return this.objectApiResponse.toJson();
+        return this.conversionService.convert(objectApiResponse, String.class);
     }
 
     @GetMapping("/api/ad/{id}")
@@ -55,7 +55,7 @@ public class ViewAdsController {
             objectApiResponse.setData(Map.of("ad", ad));
         }
 
-        return objectApiResponse.toJson();
+        return this.conversionService.convert(objectApiResponse, String.class);
     }
 
     @GetMapping("/api/ads/{author}")
@@ -64,10 +64,9 @@ public class ViewAdsController {
         User user = this.userRepository.findUserByUsername(author);
 
         if(user != null){
-            List<Ad> ads = this.iAdRepository.findAdsRelatedToUser(user.getId().intValue(), pageable);
-            objectApiResponse.setData(Map.of("ads", ads));
+            objectApiResponse.setData(Map.of("pagination", user.getAds()));
         }
 
-        return objectApiResponse.toJson();
+        return this.conversionService.convert(objectApiResponse, String.class);
     }
 }
