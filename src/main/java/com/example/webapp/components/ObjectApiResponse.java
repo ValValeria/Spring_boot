@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class ObjectApiResponse {
     private List<String> errors = new ArrayList<>();
     private String status;
@@ -39,5 +39,11 @@ public class ObjectApiResponse {
 
     public void setData(Map<String, Object> data) {
         this.data = data;
+    }
+
+    public void clearData(){
+        this.status = "";
+        this.data = new LinkedHashMap<>();
+        this.errors = new ArrayList<>();
     }
 }

@@ -1,11 +1,18 @@
 HELP.md
 .gradle
 build/
+gradle
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+server.js
+
+src/main/resources/static/index.js
+
 db.properties
+
+node_modules
 
 ### STS ###
 .apt_generated

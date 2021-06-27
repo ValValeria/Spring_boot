@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.io.File;
 
 
@@ -34,9 +31,9 @@ import java.io.File;
 @RequestMapping("/admin/create-ad")
 public class CreateAdController{
     private final ObjectApiResponse objectApiResponse;
-    private IAdRepository adRepository;
-    private IUserRepository userRepository;
-    private ConversionService conversionService;
+    private final IAdRepository adRepository;
+    private final IUserRepository userRepository;
+    private final ConversionService conversionService;
     Logger logger = LoggerFactory.getLogger(SignupController.class);
 
     @Autowired
@@ -51,11 +48,11 @@ public class CreateAdController{
     }
 
     @GetMapping("")
-    private String index(){
+    public String index(){
         return "add_ad";
     }
 
-    @PostMapping("")
+    @RequestMapping(produces = "application/json", value = "", method=RequestMethod.POST)
     private void handleRequest(@Valid Ad ad, BindingResult bindingResult,
                                @RequestParam MultipartFile photo,
                                Authentication authentication,

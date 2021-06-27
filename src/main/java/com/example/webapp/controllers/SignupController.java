@@ -38,7 +38,7 @@ public class SignupController {
     private IUserRepository iUserRepository;
 
     @GetMapping("")
-    private String index(){
+    public String index(){
         return "signup";
     }
 

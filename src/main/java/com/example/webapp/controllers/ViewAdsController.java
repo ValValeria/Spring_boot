@@ -11,13 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 
 @Controller
+@RequestMapping(produces = "application/json", value = "/api")
 public class ViewAdsController {
     private final IAdRepository iAdRepository;
     private final ObjectApiResponse objectApiResponse;
@@ -36,7 +37,7 @@ public class ViewAdsController {
         this.conversionService = conversionService;
     }
     
-    @GetMapping("/api/ads")
+    @GetMapping("/ads")
     @ResponseBody
     private String viewAds(Pageable pageable){
         this.objectApiResponse.setData(Map.of("pagination", this.iAdRepository.findAll(pageable)));
@@ -44,7 +45,7 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @GetMapping("/api/ad/{id}")
+    @GetMapping("/ad/{id}")
     @ResponseBody
     private String viewAd(@PathVariable int id, HttpServletResponse servletResponse){
         Ad ad = this.iAdRepository.findAdById(id);
@@ -58,7 +59,7 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @GetMapping("/api/ads/{author}")
+    @GetMapping("/ads/{author}")
     @ResponseBody
     private String viewAdsByAuthor(@PathVariable String author, Pageable pageable){
         User user = this.userRepository.findUserByUsername(author);
