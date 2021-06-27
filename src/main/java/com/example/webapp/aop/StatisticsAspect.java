@@ -11,30 +11,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 @Aspect
-public class AspectController {
+public class StatisticsAspect {
     private final ObjectApiResponse objectApiResponse;
-    private final Logger logger = LoggerFactory.getLogger(AspectController.class);
+    private final Logger logger = LoggerFactory.getLogger(StatisticsAspect.class);
     private final IStatistics iStatistics;
     private final HttpServletRequest request;
-    private final HttpServletResponse response;
 
     @Autowired
-    AspectController(ObjectApiResponse objectApiResponse,
+    StatisticsAspect(ObjectApiResponse objectApiResponse,
                      HttpServletRequest request,
-                     IStatistics iStatistics,
-                     HttpServletResponse response
+                     IStatistics iStatistics
                      ){
         this.request = request;
         this.objectApiResponse = objectApiResponse;
         this.iStatistics = iStatistics;
-        this.response = response;
     }
 
     @Pointcut("execution(public * com.example.webapp.controllers.*.*(..))")

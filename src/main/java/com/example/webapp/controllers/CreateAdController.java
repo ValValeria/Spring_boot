@@ -64,7 +64,7 @@ public class CreateAdController{
             if(user != null){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
                 String fileName = dateFormat.format(new Date()) + photo.getOriginalFilename();
-                String path = String.format("/static/uploads/%s", fileName );
+                String path = String.format("/static1/uploads/%s", fileName );
                 File file = new File("src\\main\\resources\\static\\uploads\\"+fileName);
 
                 if(file.createNewFile()){

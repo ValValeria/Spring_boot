@@ -3,8 +3,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
 module.exports = {
+    mode: "development",
     output:{
-        path: path.resolve(path.join('src', 'main', 'resources','static')),
+        path: path.resolve(path.join('src', 'main', 'resources','public')),
         filename: 'index.js'
     },
     entry:path.resolve(path.join(__dirname, 'vuejs', 'index.js')),
@@ -39,6 +40,6 @@ module.exports = {
         new ExtractTextPlugin('styles.css')
     ],
     resolve: {
-        extensions: ['.js', '.vue', '.scss', 'css'],
+        extensions: ['.vue', '.json','.js','.scss','.sass','.css'],
     },
 }
