@@ -9,16 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Controller
 @RequestMapping(produces = "application/json", value = "/api")
+@CrossOrigin(origins = "http://localhost:5000")
 public class ViewAdsController {
     private final IAdRepository iAdRepository;
     private final ObjectApiResponse objectApiResponse;
@@ -40,7 +41,18 @@ public class ViewAdsController {
     @GetMapping("/ads")
     @ResponseBody
     private String viewAds(Pageable pageable){
-        this.objectApiResponse.setData(Map.of("pagination", this.iAdRepository.findAll(pageable)));
+        HashMap<String, Object> map = new HashMap<>();
+
+        List<Ad> adList = this.iAdRepository.findAll(pageable).getContent().stream().map(v -> {
+            User user = v.getUser();
+            user.clearAds();
+
+            return v;
+        }).collect(Collectors.toList());
+
+        map.put("pagination", adList);
+
+        this.objectApiResponse.setData(map);
 
         return this.conversionService.convert(objectApiResponse, String.class);
     }

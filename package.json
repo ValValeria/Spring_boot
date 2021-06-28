@@ -1,42 +1,45 @@
 {
   "name": "webapp",
   "version": "1.0.0",
-  "description": "I have decided to develop an app, using spring boot",
+  "description": "My react project",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --watch"
+    "watch": "webpack --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ValValeria/Spring_boot.git"
-  },
-  "author": "",
+  "author": "Valeria D",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ValValeria/Spring_boot/issues"
-  },
-  "homepage": "https://github.com/ValValeria/Spring_boot#readme",
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.1.2",
-    "css-loader": "^5.2.6",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "node-sass": "^6.0.1",
-    "sass-loader": "^12.1.0",
-    "style-loader": "^3.0.0",
-    "vue-loader": "^16.2.0",
-    "vue-template-compiler": "^2.6.14",
-    "webpack-cli": "^4.7.2"
-  },
-  "dependencies": {
-    "@babel/core": "^7.14.6",
-    "babel-loader": "^8.2.2",
+    "babel-core": "^6.26.3",
     "express": "^4.17.1",
+    "sass": "^1.35.1",
+    "sass-loader": "^10.2.0",
+    "vue-loader": "^14.2.4",
+    "webpack": "^4.44.1"
+  },
+  "proxy": "http://localhost:4200/",
+  "dependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@types/vue": "^2.0.0",
+    "babel-loader": "^8.1.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^4.5.2",
+    "css-loader": "^4.2.2",
     "express-http-proxy": "^1.6.2",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "vue": "^3.1.2",
-    "vue-server-renderer": "^2.6.14",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "html-webpack-plugin": "^4.3.0",
+    "json-loader": "^0.5.7",
+    "lodash": "^4.17.5",
+    "rxjs": "^6.6.3",
+    "style-loader": "^1.2.1",
+    "vue": "^2.6.12",
+    "vue-router": "^3.4.3",
     "vue-style-loader": "^4.1.3",
-    "webpack": "^4.46.0"
+    "vue-template-compiler": "^2.6.12",
+    "vuetify": "^2.4.7",
+    "vuetify-loader": "^1.3.0",
+    "vuex": "^3.6.2",
+    "webpack-cli": "^3.3.12"
   }
 }

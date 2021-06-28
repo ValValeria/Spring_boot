@@ -77,4 +77,8 @@ public class User {
     public List<Ad> getAds(){
         return ads;
     }
+
+    public void clearAds(){
+        this.ads = new ArrayList<>();
+    }
 }

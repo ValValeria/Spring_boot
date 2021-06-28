@@ -1,0 +1,29 @@
+@import "./variables";
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.center{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrap{
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: $space*5 0;
+}
+
+.wrap-md{
+  @extend .wrap;
+  padding: $space*2 0;
+}
+
+.bg-light{
+  background-color: #d5d5d5;
+}

@@ -1,4 +1,3 @@
-const { VueLoaderPlugin } = require('vue-loader');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 
@@ -36,10 +35,12 @@ module.exports = {
         ]
     },
     plugins: [
-        new VueLoaderPlugin(),
         new ExtractTextPlugin('styles.css')
     ],
     resolve: {
         extensions: ['.vue', '.json','.js','.scss','.sass','.css'],
+        alias: {
+            vue: 'vue/dist/vue.js'
+        },
     },
 }

@@ -1,5 +1,21 @@
-import {createApp, h} from 'vue';
+import App from "./App";
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import HomePageComponent from "./pages/HomePageComponent";
 
-createApp({
-    template: '<h1>Hello</h1>',
-}).mount("#app");
+Vue.use(VueRouter);
+
+const routes = [
+    {path: "/", component: HomePageComponent}
+];
+
+const router = new VueRouter({
+    mode: 'history',
+    routes
+});
+
+new Vue({
+    router,
+    render: (h) => h(App),
+}).$mount("#app");
+
