@@ -36,7 +36,7 @@ export default {
 
       if(response.ok){
         const data = await response.json();
-        this.ads = data.pagination;
+        this.ads = data.data.pagination;
       }
     } catch (e){
       console.error(e);

@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 
 
 @Controller
-@RequestMapping(produces = "application/json", value = "/api")
 @CrossOrigin(origins = "http://localhost:5000")
 public class ViewAdsController {
     private final IAdRepository iAdRepository;
@@ -38,7 +37,7 @@ public class ViewAdsController {
         this.conversionService = conversionService;
     }
     
-    @GetMapping("/ads")
+    @RequestMapping(value = "/api/ads", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     private String viewAds(Pageable pageable){
         HashMap<String, Object> map = new HashMap<>();
@@ -57,7 +56,7 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @GetMapping("/ad/{id}")
+    @RequestMapping(value = "/api/ad/{id}", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     private String viewAd(@PathVariable int id, HttpServletResponse servletResponse){
         Ad ad = this.iAdRepository.findAdById(id);
@@ -71,13 +70,20 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @GetMapping("/ads/{author}")
+    @RequestMapping(value = "/api/ads/{author}", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    private String viewAdsByAuthor(@PathVariable String author, Pageable pageable){
+    private String viewAdsByAuthor(@PathVariable String author){
         User user = this.userRepository.findUserByUsername(author);
 
         if(user != null){
-            objectApiResponse.setData(Map.of("pagination", user.getAds()));
+            List<Ad> adList = user.getAds().stream().map(v -> {
+                User user1 = v.getUser();
+                user1.clearAds();
+
+                return v;
+            }).collect(Collectors.toList());
+
+            objectApiResponse.setData(Map.of("pagination", adList));
         }
 
         return this.conversionService.convert(objectApiResponse, String.class);
