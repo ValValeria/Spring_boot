@@ -1,6 +1,5 @@
 package com.example.webapp.config;
 
-import com.example.webapp.auth.RestAccessDenied;
 import com.example.webapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -39,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                .antMatchers("/signup", "/login").anonymous()
                .anyRequest().permitAll()
                .and()
-               .exceptionHandling().accessDeniedHandler(new RestAccessDenied())
+               .exceptionHandling().accessDeniedPage("/login")
                .and()
                .formLogin()
                .loginPage("/login")
