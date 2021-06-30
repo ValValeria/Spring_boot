@@ -1,9 +1,17 @@
-@import "./variables";
+@import "./base";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
 
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+  color: #124265;
+}
+
+body{
+  background-color: white !important;
 }
 
 .center{
@@ -24,6 +32,6 @@
   padding: $space*2 0;
 }
 
-.bg-light{
-  background-color: #d5d5d5;
+.basic-layout__content{
+  padding-top: $space * 2;
 }

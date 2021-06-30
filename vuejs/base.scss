@@ -1,0 +1,44 @@
+@import "./variables";
+
+.shadow{
+  box-shadow:  10px 10px 20px #e6e7e8,
+  -10px -10px 20px #ffffff;
+}
+
+.text-center{
+  text-align:center;
+}
+
+.flex-column{
+  flex-direction: column !important;
+}
+
+.txt-bold{
+  font-weight:400 !important;
+}
+
+.ml{
+  margin-left: $space;
+}
+
+.p-all{
+  padding: $space*2 !important;
+}
+
+.mt{
+  margin-top: $space;
+}
+
+.mr{
+  margin-right: $space;
+}
+
+.mb{
+  margin-bottom: $space;
+}
+
+.mb-half{
+  margin-bottom: $space/2;
+}
+
+

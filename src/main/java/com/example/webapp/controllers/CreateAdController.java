@@ -64,8 +64,8 @@ public class CreateAdController{
             if(user != null){
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
                 String fileName = dateFormat.format(new Date()) + photo.getOriginalFilename();
-                String path = String.format("/static1/uploads/%s", fileName );
-                File file = new File("src\\main\\resources\\static\\uploads\\"+fileName);
+                String path = String.format("/static/uploads/%s", fileName );
+                File file = new File("src\\main\\resources\\public\\uploads\\"+fileName);
 
                 if(file.createNewFile()){
                     ad.setImage(path);
@@ -87,7 +87,8 @@ public class CreateAdController{
         response.setContentType("application/json");
 
         PrintWriter printWriter = response.getWriter();
-        printWriter.write(this.conversionService.convert(objectApiResponse, String.class));
+        String result = this.conversionService.convert(objectApiResponse, String.class);
+        printWriter.write(result);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

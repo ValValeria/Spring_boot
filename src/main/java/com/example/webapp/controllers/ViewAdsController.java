@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:5000")
+@RequestMapping(value = "/api", produces = "application/json", method = RequestMethod.GET)
 public class ViewAdsController {
     private final IAdRepository iAdRepository;
     private final ObjectApiResponse objectApiResponse;
@@ -37,7 +38,7 @@ public class ViewAdsController {
         this.conversionService = conversionService;
     }
     
-    @RequestMapping(value = "/api/ads", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/ads")
     @ResponseBody
     private String viewAds(Pageable pageable){
         HashMap<String, Object> map = new HashMap<>();
@@ -56,10 +57,12 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @RequestMapping(value = "/api/ad/{id}", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping("/ad/{id}")
     @ResponseBody
     private String viewAd(@PathVariable int id, HttpServletResponse servletResponse){
         Ad ad = this.iAdRepository.findAdById(id);
+
+        ad.getUser().clearAds();
 
         if(ad == null){
             servletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -70,7 +73,7 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @RequestMapping(value = "/api/ads/{author}", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping("/ads/{author}")
     @ResponseBody
     private String viewAdsByAuthor(@PathVariable String author){
         User user = this.userRepository.findUserByUsername(author);
