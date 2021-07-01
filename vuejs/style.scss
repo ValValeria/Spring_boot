@@ -14,6 +14,14 @@ body{
   background-color: white !important;
 }
 
+.card-sm{
+  border-radius: 5px;
+  padding: $space !important;
+  background-color: white;
+  box-shadow: 0 0 29px 0 rgb(18 66 101 / 8%);
+  transition: all 0.3s ease-in-out;
+}
+
 .center{
   display: flex;
   align-items: center;
@@ -29,9 +37,14 @@ body{
 
 .wrap-md{
   @extend .wrap;
-  padding: $space*2 0;
+  padding: $space*2 0 !important;
 }
 
-.basic-layout__content{
-  padding-top: $space * 2;
+.basic-layout__title{
+  padding-bottom: $space * 2;
 }
+
+.bg-white{
+  background-color: white;
+}
+

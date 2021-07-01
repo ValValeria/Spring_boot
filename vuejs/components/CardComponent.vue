@@ -48,15 +48,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-@import "../variables";
-
-.card-sm{
-  border-radius: 5px;
-  padding: $space !important;
-  background-color: white;
-  box-shadow: 0 0 29px 0 rgb(18 66 101 / 8%);
-  transition: all 0.3s ease-in-out;
-}
-</style>

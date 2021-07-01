@@ -1,23 +1,58 @@
 <template>
-  <BasicLayout>
-     <div v-if="!Object.keys(post).length" class="w-100 center">
-       <div class="spinner-border text-primary" role="status">
-       </div>
-     </div>
-     <div v-else>
+  <div class="post w-100">
+    <BasicLayout :isSection="false">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-white">
+          <li class="breadcrumb-item active" aria-current="page">
+            <router-link to="/">Home</router-link>
+          </li>
+          <li class="breadcrumb-item" aria-current="page">
+            <router-link :to="this.$router.history.current.path">Ad</router-link>
+          </li>
+        </ol>
+      </nav>
+    </BasicLayout>
 
-     </div>
-  </BasicLayout>
+    <BasicLayout v-if="!Object.keys(post).length">
+      <div class="w-100 center">
+        <div class="spinner-border text-primary" role="status"></div>
+      </div>
+    </BasicLayout>
+
+    <BasicLayout :title="post.title" v-else :isSection="false">
+      <div class="post__author p-all center justify-content-start">
+        <h6 class="mb-0 mr-2">Author: </h6>
+        <router-link :to="'/user/'+userData.id">
+          {{userData.username}}
+        </router-link>
+      </div>
+      <div class="post__img mb w-100">
+        <div class="card-sm p-all w-100">
+          <img :src="post.image" alt="..."/>
+        </div>
+      </div>
+      <div class="post__description mb w-100">
+        <div class="card-sm p-all w-100">
+          <h6 class="mb-half">Description</h6>
+          <p>
+            {{post.description}}
+          </p>
+        </div>
+      </div>
+    </BasicLayout>
+  </div>
 </template>
 
 <script>
 import BasicLayout from "../layouts/BasicLayout";
+import CardComponent from "../components/CardComponent";
 
 export default {
   name: "PostPageComponent",
   data: function(){
     return {
-      post: {}
+      post: {},
+      userData: {}
     }
   },
   computed: {
@@ -25,27 +60,36 @@ export default {
       return this.$route.params.id;
     }
   },
-  mounted() {
-    this.$nextTick(async () => {
-       const response = await fetch(`/api/ad/${this.postId}`);
+  async mounted() {
+    try{
+      const response = await fetch(`/api/ad/${this.postId}`);
 
-       if(response.ok){
-         const data = await response.json();
+      if(response.ok){
+        const data = await response.json();
 
-         if(data && typeof data === "object"){
-           this.post = data.data.ad;
-         }
-       } else {
-         await this.$router.push("/");
-       }
-    });
+        if(data && typeof data === "object"){
+          this.post = data.data.ad;
+          this.userData = data.data.ad.user;
+        }
+      } else {
+        await this.$router.push("/");
+      }
+    }catch (e){
+      await this.$router.push("/");
+    }
   },
   components: {
+    CardComponent,
     BasicLayout
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+img{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  max-height: 250px;
+}
 </style>

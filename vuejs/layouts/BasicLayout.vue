@@ -2,8 +2,8 @@
 <div class="basic-layout w-100 ">
   <div class="basic-layout__container w-100">
     <div :class="classes">
-      <h1 v-if="title" class="text-center">{{title.toUpperCase()}}</h1>
-      <div class="basic-layout__content">
+      <h1 class="basic-layout__title text-center" v-if="title">{{title.toUpperCase()}}</h1>
+      <div class="basic-layout__content w-100">
         <slot></slot>
       </div>
     </div>
