@@ -40,19 +40,37 @@
         </div>
       </div>
     </BasicLayout>
+
+    <BasicLayout :is-section="false">
+      <div class="w-100 center flex-column">
+        <h2 class="mb">Other ads</h2>
+
+        <FlexLayout>
+          <CardComponent
+              v-for="ad in ads"
+              :title="ad.title"
+              :description="ad.description"
+              :id="ad.id"
+              :image="ad.image"
+              :key="Math.random()"/>
+        </FlexLayout>
+      </div>
+    </BasicLayout>
   </div>
 </template>
 
 <script>
 import BasicLayout from "../layouts/BasicLayout";
 import CardComponent from "../components/CardComponent";
+import FlexLayout from "../layouts/FlexLayout";
 
 export default {
   name: "PostPageComponent",
   data: function(){
     return {
       post: {},
-      userData: {}
+      userData: {},
+      ads: []
     }
   },
   computed: {
@@ -62,17 +80,20 @@ export default {
   },
   async mounted() {
     try{
-      const response = await fetch(`/api/ad/${this.postId}`);
+      const responses = await Promise.all([
+        fetch(`/api/ad/${this.postId}`),
+        fetch(`/api/ads/?excludedId=${this.postId}&page=0&size=3`),
+      ]);
 
-      if(response.ok){
-        const data = await response.json();
+      if(responses[0].ok && responses[1].ok){
+        const post = await responses[0].json();
+        this.post = post.data.ad;
+        this.userData = post.data.ad.user;
 
-        if(data && typeof data === "object"){
-          this.post = data.data.ad;
-          this.userData = data.data.ad.user;
-        }
+        const otherPosts = await responses[1].json();
+        this.ads = otherPosts.data.pagination;
       } else {
-        await this.$router.push("/");
+        throw new Error();
       }
     }catch (e){
       await this.$router.push("/");
@@ -80,7 +101,8 @@ export default {
   },
   components: {
     CardComponent,
-    BasicLayout
+    BasicLayout,
+    FlexLayout
   }
 }
 </script>

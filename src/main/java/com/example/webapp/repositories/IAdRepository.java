@@ -11,4 +11,5 @@ public interface IAdRepository extends JpaRepository<Ad, Integer> {
     @Query("select u from Ad u where u.user.username = :author")
     List<Ad> findAdsRelatedToUser(@Param("author") String author, Pageable pageable);
     Ad findAdById(int id);
+    List<Ad> findAllByIdNot(int id, Pageable pageable);
 }

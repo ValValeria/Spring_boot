@@ -7,10 +7,12 @@ import com.example.webapp.repositories.IAdRepository;
 import com.example.webapp.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +42,17 @@ public class ViewAdsController {
     
     @RequestMapping(value = "/ads")
     @ResponseBody
-    private String viewAds(Pageable pageable){
+    private String viewAds(Pageable pageable, @RequestParam(required=false) Integer excludedId){
         HashMap<String, Object> map = new HashMap<>();
+        List<Ad> adList;
 
-        List<Ad> adList = this.iAdRepository.findAll(pageable).getContent().stream().map(v -> {
+        if(excludedId != null){
+            adList = this.iAdRepository.findAllByIdNot(excludedId, pageable);
+        } else{
+            adList = this.iAdRepository.findAll(pageable).getContent();
+        }
+
+        adList = adList.stream().map(v -> {
             User user = v.getUser();
             user.clearAds();
 
