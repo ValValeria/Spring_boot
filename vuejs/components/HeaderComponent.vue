@@ -10,6 +10,7 @@
           <li><a class="nav-link scrollto " href="/login">Login</a></li>
           <li><a class="nav-link scrollto " href="/signup">Sign up</a></li>
           <li><router-link class="nav-link scrollto " to="/ads">Advertisements</router-link></li>
+          <li><router-link class="nav-link scrollto " to="/users">Users</router-link></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>

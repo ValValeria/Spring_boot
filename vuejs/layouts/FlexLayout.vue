@@ -1,7 +1,7 @@
 <template>
-<div class="flex-layout">
-  <div class="flex-layout__wrap">
-    <div class="flex-layout__items">
+<div class="flex-layout w-100">
+  <div class="flex-layout__wrap" :data-id="uniqueId" ref="wrap">
+    <div class="flex-layout__items center">
       <slot></slot>
     </div>
   </div>
@@ -11,26 +11,24 @@
 <script>
 export default {
   name: "FlexLayout",
-  mounted() {
-    this.$nextTick(v => {
-       const element = document.querySelector(".flex-layout__items");
+  data(){
+    return {
+      uniqueId: Math.random()
+    }
+  },
+  beforeCreate() {
+    this.$nextTick(() => {
+      const element = this.$refs.wrap.firstElementChild;
 
-       Array.from(element.children).forEach(v => {
-         v.classList.add('flex__item')
-       });
-    })
+      Array.from(element.children).forEach(v => {
+        v.classList.add('flex__item');
+      });
+    });
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style  lang="scss">
 @import '../variables';
 
-.flex__item{
-  margin-right: $space !important;
-}
-
-.flex__item :last-child(1){
-  margin-right: 0;
-}
 </style>

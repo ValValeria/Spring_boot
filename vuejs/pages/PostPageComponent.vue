@@ -14,15 +14,13 @@
     </BasicLayout>
 
     <BasicLayout v-if="!Object.keys(post).length">
-      <div class="w-100 center">
-        <div class="spinner-border text-primary" role="status"></div>
-      </div>
+      <SpinnerComponent/>
     </BasicLayout>
 
     <BasicLayout :title="post.title" v-else :isSection="false">
       <div class="post__author p-all center justify-content-start">
         <h6 class="mb-0 mr-2">Author: </h6>
-        <router-link :to="'/user/'+userData.id">
+        <router-link :to="'/user-ads/'+userData.id">
           {{userData.username}}
         </router-link>
       </div>
@@ -41,8 +39,8 @@
       </div>
     </BasicLayout>
 
-    <BasicLayout :is-section="false">
-      <div class="w-100 center flex-column">
+    <BasicLayout :is-section="false" v-if="ads.length">
+      <div class="w-100 center flex-column mb">
         <h2 class="mb">Other ads</h2>
 
         <FlexLayout>
@@ -63,6 +61,7 @@
 import BasicLayout from "../layouts/BasicLayout";
 import CardComponent from "../components/CardComponent";
 import FlexLayout from "../layouts/FlexLayout";
+import SpinnerComponent from "../components/SpinnerComponent";
 
 export default {
   name: "PostPageComponent",
@@ -102,7 +101,8 @@ export default {
   components: {
     CardComponent,
     BasicLayout,
-    FlexLayout
+    FlexLayout,
+    SpinnerComponent
   }
 }
 </script>
@@ -113,5 +113,9 @@ img{
   width: 100%;
   height: 100%;
   max-height: 250px;
+}
+
+p{
+  word-break: break-word;
 }
 </style>

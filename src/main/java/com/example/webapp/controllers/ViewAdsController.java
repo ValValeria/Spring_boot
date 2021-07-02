@@ -12,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -47,7 +44,7 @@ public class ViewAdsController {
         List<Ad> adList;
 
         if(excludedId != null){
-            adList = this.iAdRepository.findAllByIdNot(excludedId, pageable);
+            adList = this.iAdRepository.findAdsByIdNot(excludedId, pageable);
         } else{
             adList = this.iAdRepository.findAll(pageable).getContent();
         }
@@ -82,13 +79,13 @@ public class ViewAdsController {
         return this.conversionService.convert(objectApiResponse, String.class);
     }
 
-    @RequestMapping("/ads/{author}")
+    @RequestMapping("/ads/{id}")
     @ResponseBody
-    private String viewAdsByAuthor(@PathVariable String author){
-        User user = this.userRepository.findUserByUsername(author);
+    private String viewAdsByAuthor(@PathVariable Long id){
+        Optional<User> user = this.userRepository.findById(id);
 
-        if(user != null){
-            List<Ad> adList = user.getAds().stream().map(v -> {
+        if(user.isPresent()){
+            List<Ad> adList = user.get().getAds().stream().map(v -> {
                 User user1 = v.getUser();
                 user1.clearAds();
 

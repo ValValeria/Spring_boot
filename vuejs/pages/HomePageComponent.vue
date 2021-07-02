@@ -4,7 +4,7 @@
   <AboutUsComponent/>
   <ServiceComponent/>
   <BasicLayout title="Our advertisement">
-      <div class="w-100 center">
+      <div class="w-100 center" v-if="ads.length">
         <CardComponent
             v-for="ad in ads"
             :title="ad.title"
@@ -12,6 +12,10 @@
             :id="ad.id"
             :image="ad.image"
             :key="Math.random()"/>
+      </div>
+
+      <div v-else>
+        <SpinnerComponent/>
       </div>
   </BasicLayout>
   <section id="cta" class="cta">
@@ -34,9 +38,12 @@ import CardComponent from "../components/CardComponent";
 import BannerComponent from "../components/BannerComponent";
 import AboutUsComponent from "../components/AboutUsComponent";
 import ServiceComponent from "../components/ServiceComponent";
+import SpinnerComponent from "../components/SpinnerComponent";
+
+
 export default {
   name: "HomePageComponent",
-  components: {ServiceComponent, AboutUsComponent, BannerComponent, CardComponent, BasicLayout},
+  components: {ServiceComponent, AboutUsComponent, BannerComponent, CardComponent, BasicLayout, SpinnerComponent},
   data: function (){
     return {
       page: 0,

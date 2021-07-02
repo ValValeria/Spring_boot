@@ -34,6 +34,7 @@ public class UsersController {
     @ResponseBody
     private String users(Pageable pageable){
         Page<User> userPage = userRepository.findAll(pageable);
+        userPage.getContent().forEach(User::clearAds);
 
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("pagination", userPage);

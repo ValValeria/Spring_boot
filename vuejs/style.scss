@@ -12,6 +12,7 @@
 
 body{
   background-color: white !important;
+  overflow-x: hidden;
 }
 
 .card-sm{
@@ -48,3 +49,20 @@ body{
   background-color: white;
 }
 
+.app__content{
+  padding-top: 60px !important;
+}
+
+
+.flex__item{
+  margin-right: $space !important;
+  margin-bottom: $space;
+}
+
+.flex__item :last-child(1){
+  margin-right: 0;
+}
+
+.flex__item{
+  max-width: 300px;
+}

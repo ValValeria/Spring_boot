@@ -40,6 +40,7 @@ public class UserController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } else {
             HashMap<String, Object> hashMap = new HashMap<>();
+            user.get().clearAds();
             hashMap.put("user", user.get());
 
             objectApiResponse.setData(hashMap);
