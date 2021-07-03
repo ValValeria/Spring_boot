@@ -5,6 +5,9 @@ body {
     background-color: #ECF0F5;
     font-family: 'Roboto', sans-serif;
     min-height:100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .text-white{
@@ -12,7 +15,6 @@ body {
 }
 
 .login-box {
-    margin-top: 75px;
     height: auto;
     background: transparent;
     text-align: center;

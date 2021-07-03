@@ -57,7 +57,7 @@ export default {
 
       if(response.ok){
         const data = await response.json();
-        this.ads = data.data.pagination;
+        this.ads = data.data.pagination.content;
       }
     } catch (e){
       console.error(e);

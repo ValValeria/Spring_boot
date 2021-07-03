@@ -84,13 +84,12 @@ export default {
         fetch(`/api/ads/?excludedId=${this.postId}&page=0&size=3`),
       ]);
 
-      if(responses[0].ok && responses[1].ok){
-        const post = await responses[0].json();
+      if(responses.every(v => v.ok)){
+        const [post, otherPosts] = await Promise.all(responses.map(v => v.json()));
+
         this.post = post.data.ad;
         this.userData = post.data.ad.user;
-
-        const otherPosts = await responses[1].json();
-        this.ads = otherPosts.data.pagination;
+        this.ads = otherPosts.data.pagination.content;
       } else {
         throw new Error();
       }

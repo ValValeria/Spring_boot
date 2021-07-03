@@ -15,7 +15,7 @@
           </h4>
         </div>
         <div class="card-sm__btn">
-          <ButtonComponent @click="goToPost()">Read more</ButtonComponent>
+          <ButtonComponent @click="goToPost()">{{linkText || "Read more"}}</ButtonComponent>
         </div>
       </div>
     </div>
@@ -39,11 +39,28 @@ export default {
     },
     image: {
       type: String
+    },
+    link: {
+      type: String,
+      required: false
+    },
+    linkText: {
+      type: String,
+      required: false
+    }
+  },
+  computed:{
+    linkToNavigate(){
+      if(this.link){
+        return this.link;
+      }
+
+      return `/post/${this.id}`;
     }
   },
   methods: {
     goToPost(){
-      this.$router.push(`/post/${this.id}`);
+      this.$router.push(this.linkToNavigate);
     }
   }
 }

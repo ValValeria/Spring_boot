@@ -24,6 +24,9 @@ public class User {
     @Column
     private String role;
 
+    @Column
+    private String image;
+
     @OneToMany(mappedBy="user", fetch = FetchType.EAGER,
             cascade = CascadeType.ALL, targetEntity=Ad.class)
     private List<Ad> ads = new ArrayList<>();
@@ -80,5 +83,13 @@ public class User {
 
     public void clearAds(){
         this.ads = new ArrayList<>();
+    }
+
+    public void setImage(String img){
+        this.image = img;
+    }
+
+    public String getImage(){
+        return this.image != null ? this.image : "/static/user.png";
     }
 }

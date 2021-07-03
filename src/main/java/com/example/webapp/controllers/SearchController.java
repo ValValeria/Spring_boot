@@ -39,9 +39,9 @@ public class SearchController {
     @GetMapping("/api/search/user")
     public String searchForUser(@RequestParam() String search,
                                 Pageable pageable){
-        List<User> page = this.userRepository.findByUsernameContainingIgnoreCase(search, pageable);
+        Page<User> page = this.userRepository.findByUsernameContainingIgnoreCase(search, pageable);
 
-        page.forEach(User::clearAds);
+        page.getContent().forEach(User::clearAds);
 
         this.objectApiResponse.setData(Map.of("results", page));
 
@@ -51,9 +51,9 @@ public class SearchController {
     @GetMapping("/api/search/ads")
     public String searchForAds(@RequestParam() String search,
                                 Pageable pageable){
-        List<Ad> page = this.adRepository.findAdsByTitleContaining(search, pageable);
+        Page<Ad> page = this.adRepository.findAdsByTitleContaining(search, pageable);
 
-        page.forEach(v -> v.getUser().clearAds());
+        page.getContent().forEach(v -> v.getUser().clearAds());
 
         this.objectApiResponse.setData(Map.of("results", page));
 

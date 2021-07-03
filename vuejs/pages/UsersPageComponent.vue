@@ -5,25 +5,32 @@
         <form class="row w-100 card-sm center">
           <div>
             <label for="inputPassword2" class="visually-hidden">Search</label>
-            <input type="text" class="form-control" id="inputPassword2" placeholder="Type here ...">
+            <input type="text" class="form-control" id="inputPassword2" placeholder="Type here ..." v-model="searchText">
           </div>
           <div>
-            <ButtonComponent>
+            <ButtonComponent @click="search($event)">
               Find
             </ButtonComponent>
           </div>
         </form>
       </div>
-      <div class="users__list">
+      <div class="users__list center">
           <FlexLayout v-if="users.length">
               <div class="users__item" v-for="user in users">
                 <CardComponent
                     :title="user.username"
                     :description="user.role"
+                    :image="user.image"
                     :id="user.id"
-                    :key="Math.random()"/>
+                    :key="Math.random()"
+                    :link="'/user/'+user.id"
+                    :linkText="'Visit profile'"
+                />
               </div>
           </FlexLayout>
+          <div v-if="isSearch && !users.length">
+             <h6 class="mt">No results. Sorry :(</h6>
+          </div>
       </div>
     </BasicLayout>
   </div>
@@ -42,7 +49,9 @@ export default {
     return {
       page: 0,
       size: 3,
-      users: []
+      users: [],
+      searchText: "",
+      isSearch: false
     }
   },
   async mounted(){
@@ -52,6 +61,26 @@ export default {
        const data = await response.json();
        this.users = data.data.pagination.content;
      }
+  },
+  methods:{
+    async search($event){
+      $event.preventDefault();
+      this.clearPaginationData();
+
+      this.isSearch = true;
+
+      const url = `/api/search/user?page=${this.page}&size=${this.size}&search=${encodeURIComponent(this.searchText)}`;
+      const response = await fetch(url);
+
+      if(response.ok){
+        const data = await response.json();
+        this.users = data.data.results.content;
+      }
+    },
+
+    clearPaginationData(){
+      this.page = 0;
+    }
   }
 }
 </script>

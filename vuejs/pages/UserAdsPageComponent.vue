@@ -1,5 +1,24 @@
 <template>
  <div class="user-ads w-100">
+   <BasicLayout :isSection="false">
+     <nav aria-label="breadcrumb">
+       <ol class="breadcrumb bg-white">
+         <li class="breadcrumb-item active" aria-current="page">
+           <router-link to="/">Home</router-link>
+         </li>
+         <li class="breadcrumb-item active" aria-current="page">
+           <router-link to="/users">Users</router-link>
+         </li>
+         <li class="breadcrumb-item active" aria-current="page">
+           <div>{{user.username}}</div>
+         </li>
+         <li class="breadcrumb-item" aria-current="page">
+           <router-link :to="this.$router.history.current.path">Ads</router-link>
+         </li>
+       </ol>
+     </nav>
+   </BasicLayout>
+
    <BasicLayout :title="'The ads of '+this.user.username" v-if="Object.keys(user).length">
        <FlexLayout>
            <CardComponent
@@ -52,12 +71,9 @@ export default {
       ]);
 
       if(responses.every(v => v.ok)){
-        const data = await responses[0].json();
-        this.ads = data.data.pagination || [];
+        const [data, userData] = await Promise.all([...responses.map(v => v.json())]);
 
-        console.log(this.ads)
-
-        const userData = await responses[1].json();
+        this.ads = data.data.pagination.content || [];
         this.user = userData.data.user || {};
 
         this.isLoading = false;

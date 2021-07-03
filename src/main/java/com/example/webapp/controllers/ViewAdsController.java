@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Controller
@@ -22,18 +21,15 @@ import java.util.stream.Collectors;
 public class ViewAdsController {
     private final IAdRepository iAdRepository;
     private final ObjectApiResponse objectApiResponse;
-    private final IUserRepository userRepository;
     private final ConversionService conversionService;
 
     @Autowired
     public ViewAdsController(IAdRepository iAdRepository,
                       ObjectApiResponse objectApiResponse,
-                      IUserRepository userRepository,
                       ConversionService conversionService
                       ){
         this.iAdRepository = iAdRepository;
         this.objectApiResponse = objectApiResponse;
-        this.userRepository = userRepository;
         this.conversionService = conversionService;
     }
     
@@ -41,20 +37,18 @@ public class ViewAdsController {
     @ResponseBody
     private String viewAds(Pageable pageable, @RequestParam(required=false) Integer excludedId){
         HashMap<String, Object> map = new HashMap<>();
-        List<Ad> adList;
+        Page<Ad> adList;
 
         if(excludedId != null){
             adList = this.iAdRepository.findAdsByIdNot(excludedId, pageable);
         } else{
-            adList = this.iAdRepository.findAll(pageable).getContent();
+            adList = this.iAdRepository.findAll(pageable);
         }
 
-        adList = adList.stream().map(v -> {
+        adList.getContent().forEach(v -> {
             User user = v.getUser();
             user.clearAds();
-
-            return v;
-        }).collect(Collectors.toList());
+        });
 
         map.put("pagination", adList);
 
@@ -81,19 +75,15 @@ public class ViewAdsController {
 
     @RequestMapping("/ads/{id}")
     @ResponseBody
-    private String viewAdsByAuthor(@PathVariable Long id){
-        Optional<User> user = this.userRepository.findById(id);
+    private String viewAdsByAuthor(@PathVariable Long id, Pageable pageable){
+        Page<Ad> page = this.iAdRepository.findAdsRelatedToUser(id, pageable);
 
-        if(user.isPresent()){
-            List<Ad> adList = user.get().getAds().stream().map(v -> {
-                User user1 = v.getUser();
-                user1.clearAds();
+        page.getContent().forEach(v -> {
+            User user1 = v.getUser();
+            user1.clearAds();
+        });
 
-                return v;
-            }).collect(Collectors.toList());
-
-            objectApiResponse.setData(Map.of("pagination", adList));
-        }
+        objectApiResponse.setData(Map.of("pagination", page));
 
         return this.conversionService.convert(objectApiResponse, String.class);
     }

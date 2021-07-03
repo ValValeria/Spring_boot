@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface IAdRepository extends JpaRepository<Ad, Integer> {
-    @Query("select u from Ad u where u.user.username = :author")
-    List<Ad> findAdsRelatedToUser(@Param("author") String author, Pageable pageable);
+    @Query("select u from Ad u where u.user.id = :id")
+    Page<Ad> findAdsRelatedToUser(@Param("id") Long id, Pageable pageable);
     Ad findAdById(int id);
-    List<Ad> findAdsByIdNot(int id, Pageable pageable);
-    List<Ad> findAdsByTitleContaining(String title, Pageable pageable);
+    Page<Ad> findAdsByIdNot(int id, Pageable pageable);
+    Page<Ad> findAdsByTitleContaining(String title, Pageable pageable);
 }
