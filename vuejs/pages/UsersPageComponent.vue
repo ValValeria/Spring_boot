@@ -1,38 +1,53 @@
 <template>
   <div class="users w-100">
-    <BasicLayout title="Our users">
-      <div class="users__search center mb">
-        <form class="row w-100 card-sm center">
-          <div>
-            <label for="inputPassword2" class="visually-hidden">Search</label>
-            <input type="text" class="form-control" id="inputPassword2" placeholder="Type here ..." v-model="searchText">
-          </div>
-          <div>
-            <ButtonComponent @click="search($event)">
-              Find
-            </ButtonComponent>
-          </div>
-        </form>
-      </div>
-      <div class="users__list center">
+    <BasicLayout :isSection="false">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-white">
+          <li class="breadcrumb-item active" aria-current="page">
+            <router-link to="/">Home</router-link>
+          </li>
+          <li class="breadcrumb-item" aria-current="page">
+            <router-link :to="this.$router.history.current.path">Users</router-link>
+          </li>
+        </ol>
+      </nav>
+    </BasicLayout>
+
+    <div class="users__area">
+      <BasicLayout title="Our users" :is-section="false">
+        <div class="users__search center mb">
+          <form class="row w-100 card-sm center">
+            <div>
+              <label for="inputPassword2" class="visually-hidden">Search</label>
+              <input type="text" class="form-control" id="inputPassword2" placeholder="Type here ..." v-model="searchText">
+            </div>
+            <div>
+              <ButtonComponent @click="search($event)">
+                Find
+              </ButtonComponent>
+            </div>
+          </form>
+        </div>
+        <div class="users__list center">
           <FlexLayout v-if="users.length">
-              <div class="users__item" v-for="user in users">
-                <CardComponent
-                    :title="user.username"
-                    :description="user.role"
-                    :image="user.image"
-                    :id="user.id"
-                    :key="Math.random()"
-                    :link="'/user/'+user.id"
-                    :linkText="'Visit profile'"
-                />
-              </div>
+            <div class="users__item" v-for="user in users">
+              <CardComponent
+                  :title="user.username"
+                  :description="user.role"
+                  :image="user.image"
+                  :id="user.id"
+                  :key="Math.random()"
+                  :link="'/user/'+user.id"
+                  :linkText="'Visit profile'"
+              />
+            </div>
           </FlexLayout>
           <div v-if="isSearch && !users.length">
-             <h6 class="mt">No results. Sorry :(</h6>
+            <h6 class="mt">No results. Sorry :(</h6>
           </div>
-      </div>
-    </BasicLayout>
+        </div>
+      </BasicLayout>
+    </div>
   </div>
 </template>
 
@@ -99,5 +114,9 @@ form div:nth-child(1){
 
 .users__item{
   flex: 1 1 33%;
+}
+
+.users__area{
+  min-height: 40vh;
 }
 </style>

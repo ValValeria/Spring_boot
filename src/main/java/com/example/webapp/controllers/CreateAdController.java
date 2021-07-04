@@ -1,5 +1,6 @@
 package com.example.webapp.controllers;
 
+import com.example.webapp.annotations.RequireAuth;
 import com.example.webapp.components.ObjectApiResponse;
 import com.example.webapp.models.Ad;
 import com.example.webapp.models.User;
@@ -27,8 +28,8 @@ import java.util.List;
 import java.io.File;
 
 
-@Controller
-@RequestMapping("/admin/create-ad")
+@RequestMapping("/create-ad")
+@RestController
 public class CreateAdController{
     private final ObjectApiResponse objectApiResponse;
     private final IAdRepository adRepository;
@@ -47,17 +48,14 @@ public class CreateAdController{
         this.conversionService = conversionService;
     }
 
-    @GetMapping("")
-    public String index(){
-        return "add_ad";
-    }
-
-    @RequestMapping(produces = "application/json", value = "", method=RequestMethod.POST)
-    private void handleRequest(@Valid Ad ad, BindingResult bindingResult,
-                               @RequestParam MultipartFile photo,
-                               Authentication authentication,
-                               HttpServletResponse response
-                               ) throws IOException {
+    @RequestMapping(produces = "application/json", value = "/**", method=RequestMethod.POST)
+    @RequireAuth
+    protected void handleRequest(@Valid Ad ad,
+                                 BindingResult bindingResult,
+                                 @RequestParam() MultipartFile photo,
+                                 Authentication authentication,
+                                 HttpServletResponse response
+                                ) throws IOException {
         if(!bindingResult.hasErrors()){
             User user = userRepository.findUserByUsername(authentication.getName());
 
@@ -82,6 +80,8 @@ public class CreateAdController{
                     }
                 }
             }
+        } else {
+            objectApiResponse.setErrors(List.of("Please check the validity of fields"));
         }
 
         response.setContentType("application/json");

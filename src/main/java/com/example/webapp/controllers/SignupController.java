@@ -32,10 +32,13 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/signup")
 public class SignupController {
-    Logger logger = LoggerFactory.getLogger(SignupController.class);
+    private final Logger logger = LoggerFactory.getLogger(SignupController.class);
+    private final IUserRepository iUserRepository;
 
     @Autowired
-    private IUserRepository iUserRepository;
+    SignupController(IUserRepository iUserRepository){
+        this.iUserRepository = iUserRepository;
+    }
 
     @GetMapping("")
     public String index(){
@@ -43,7 +46,7 @@ public class SignupController {
     }
 
     @PostMapping("")
-    private void signup(@Valid User user,
+    protected void signup(@Valid User user,
                           BindingResult bindingResult,
                           HttpServletResponse httpServletResponse,
                           HttpServletRequest httpServletRequest
@@ -75,7 +78,7 @@ public class SignupController {
                 context.setAuthentication(authentication);
                 SecurityContextHolder.setContext(context);
 
-                httpServletResponse.sendRedirect("/admin");
+                httpServletResponse.sendRedirect("/");
 
                 logger.info("Authentication is successful");
             }
