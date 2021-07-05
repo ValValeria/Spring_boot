@@ -63,25 +63,28 @@ public class UserController {
     @PostMapping("/change-userdata")
     public String changeUserData(@Valid User user,
                                  BindingResult bindingResult,
-                                 @RequestParam() MultipartFile avatar,
+                                 @RequestParam(required=false) MultipartFile avatar,
                                  Principal principal
                                  ) throws IOException {
         if(bindingResult.hasErrors()){
             this.objectApiResponse.setErrors(List.of("Invalid data"));
-        } else if(this.userRepository.existsById(user.getId())){
+        } else if(user.getId() != null && this.userRepository.existsById(user.getId())){
             String authUsername = principal.getName();
 
             if(authUsername.equalsIgnoreCase(user.getUsername())){
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
-                String fileName = dateFormat.format(new Date()) + avatar.getOriginalFilename();
-                String path = String.format("/static/photos/%s", fileName );
-                File file = new File("src\\main\\resources\\public\\photos\\"+fileName);
+                if(avatar != null){
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss");
+                    String fileName = dateFormat.format(new Date()) + avatar.getOriginalFilename();
+                    String path = String.format("/static/photos/%s", fileName );
+                    File file = new File("src\\main\\resources\\public\\photos\\"+fileName);
 
-                if(file.createNewFile()) {
-                    user.setImage(path);
-                    this.userRepository.save(user);
-                    this.objectApiResponse.setStatus("ok");
+                    if(file.createNewFile()) {
+                        user.setImage(path);
+                    }
                 }
+
+                this.userRepository.save(user);
+                this.objectApiResponse.setStatus("ok");
             } else {
                this.objectApiResponse.setErrors(List.of("You can't update the data of other users"));
             }

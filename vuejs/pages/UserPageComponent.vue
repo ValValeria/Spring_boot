@@ -16,13 +16,24 @@
       <div class="user__data mb">
         <FlexLayout>
           <div class="user__image card-sm">
-            <img :src="user.image" alt="..."/>
+            <img :src="user.image" alt="..." class="mb" ref="img"/>
+            <div class="user__btn-download" v-if="isAllowed">
+              <div class="input-group mb-3">
+                <input type="file" class="form-control" id="inputGroupFile01" hidden ref="file" @change="uploadAvatar()">
+                <ButtonComponent @click="$refs.file.click()">Change the avatar</ButtonComponent>
+              </div>
+            </div>
+            <div class="user__btn-download" v-if="isAllowed">
+              <div class="input-group mb-3">
+                <ButtonComponent @click="updateProfile()">Update the profile</ButtonComponent>
+              </div>
+            </div>
           </div>
           <div class="user__profile-info card-sm">
             <FlexLayout>
               <div>
                 <h6>Username: </h6>
-                <p>{{user.username}}</p>
+                <p :contenteditable="isAllowed" ref="username">{{user.username}}</p>
               </div>
               <div>
                 <h6>Role: </h6>
@@ -31,18 +42,19 @@
             </FlexLayout>
             <div>
               <h6>About the user</h6>
-              <p>{{user.description || "Hi! I have decided not to tell about myself"}}</p>
+              <p :contenteditable="isAllowed" ref="description">{{user.description || "Hi! I have decided not to tell about myself"}}</p>
             </div>
           </div>
         </FlexLayout>
       </div>
+
       <div class="user__ads mt" v-if="!isLoading && ads.length">
         <div class="w-100 center mb mt">
           <h3>The ads of user</h3>
         </div>
         <div class="user__ads-list">
           <FlexLayout v-if="!isLoading">
-            <CardComponent
+            <UserAdCardComponent
                 v-for="ad in ads"
                 :title="ad.title"
                 :description="ad.description"
@@ -62,6 +74,9 @@ import BasicLayout from "../layouts/BasicLayout";
 import FlexLayout from "../layouts/FlexLayout";
 import CardComponent from "../components/CardComponent";
 import SpinnerComponent from "../components/SpinnerComponent";
+import UserAdCardComponent from "../components/UserAdCardComponent";
+import {DELETE_AD$} from "../store";
+import ButtonComponent from "../components/ButtonComponent";
 
 export default {
   name: "UserPageComponent",
@@ -75,12 +90,19 @@ export default {
     };
   },
   components:{
+    UserAdCardComponent,
     SpinnerComponent,
-    BasicLayout, FlexLayout, CardComponent
+    BasicLayout,
+    FlexLayout,
+    CardComponent,
+    ButtonComponent
   },
   computed:{
     id(){
-      return this.$route.params.id;
+      return parseInt(this.$route.params.id, 10);
+    },
+    isAllowed(){
+      return this.id === this.user.id || this.user.role === "admin" && this.id && this.user.id;
     }
   },
   async mounted(){
@@ -99,6 +121,42 @@ export default {
       }
     } catch (e){
       await this.$router.push("/");
+    }
+
+    DELETE_AD$.subscribe(v => {
+      document.location.reload();
+    });
+  },
+  methods:{
+    async updateProfile(){
+      const username = this.$refs.username.textContent;
+      const description = this.$refs.description.textContent;
+      let avatar = this.$refs.file.files[0];
+      let formData = new FormData();
+
+      Object.entries({username, description, avatar}).forEach(([k, v]) => {
+        if(k === "file" && avatar){
+          formData.set(k, v, avatar.name);
+        } else {
+          formData.set(k, v);
+        }
+      });
+
+      const response = await fetch('/api/change-userdata', {
+        method: 'POST',
+        body: formData
+      });
+      const json = await response.json();
+
+      if(json.status === "ok"){
+        alert("Changes are saved");
+      }
+    },
+    uploadAvatar(){
+      let file = this.$refs.file.files[0];
+      const url = URL.createObjectURL(file);
+
+      this.$refs.img.setAttribute("src", url);
     }
   }
 }
@@ -129,5 +187,9 @@ export default {
 .user .user__data .flex-layout__items{
   align-items: flex-start !important;
   justify-content: flex-start !important;
+}
+
+.user .user__data button{
+  width: 100%;
 }
 </style>

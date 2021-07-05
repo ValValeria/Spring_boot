@@ -24,6 +24,7 @@
 
 <script>
 import ButtonComponent from "./ButtonComponent";
+
 export default {
   name: "CardComponent",
   components: {ButtonComponent},

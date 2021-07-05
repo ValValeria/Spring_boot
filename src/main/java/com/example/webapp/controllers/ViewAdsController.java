@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:5000")
 @RequestMapping(value = "/api", produces = "application/json", method = RequestMethod.GET)
 public class ViewAdsController {
@@ -34,7 +34,6 @@ public class ViewAdsController {
     }
     
     @RequestMapping(value = "/ads")
-    @ResponseBody
     private String viewAds(Pageable pageable, @RequestParam(required=false) Integer excludedId){
         HashMap<String, Object> map = new HashMap<>();
         Page<Ad> adList;
@@ -58,7 +57,6 @@ public class ViewAdsController {
     }
 
     @RequestMapping("/ad/{id}")
-    @ResponseBody
     private String viewAd(@PathVariable int id, HttpServletResponse servletResponse){
         Ad ad = this.iAdRepository.findAdById(id);
 
@@ -74,7 +72,6 @@ public class ViewAdsController {
     }
 
     @RequestMapping("/ads/{id}")
-    @ResponseBody
     private String viewAdsByAuthor(@PathVariable Long id, Pageable pageable){
         Page<Ad> page = this.iAdRepository.findAdsRelatedToUser(id, pageable);
 
@@ -84,6 +81,14 @@ public class ViewAdsController {
         });
 
         objectApiResponse.setData(Map.of("pagination", page));
+
+        return this.conversionService.convert(objectApiResponse, String.class);
+    }
+
+    @GetMapping("/ads/ids/{userId}")
+    private String getIdsOfAds(@PathVariable Long userId){
+        List<Integer> ids = this.iAdRepository.getIdAdsRelatedToUser(userId);
+        objectApiResponse.setData(Map.of("ids", ids));
 
         return this.conversionService.convert(objectApiResponse, String.class);
     }
