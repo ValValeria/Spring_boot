@@ -17,4 +17,5 @@ I have decided to develop an app, using spring boot
 In the terminal type the following:
 * npm install
 * npm run watch <br/>
+
 In addition, you need to create the file, named 'db.properties' in the resources folder. Then create tables, matched with entities, located in folder `/src/main/java/com/example/webapp/models`. After that, run the spring boot app.
