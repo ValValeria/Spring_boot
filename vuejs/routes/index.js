@@ -30,13 +30,17 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    const response = await fetch('/api/auth-user');
+    try{
+        const response = await fetch('/api/auth-user');
 
-    if(response.ok){
-        const json = await response.json();
-        const user = json.data.user;
+        if(response.ok){
+            const json = await response.json();
+            const user = json.data.user;
 
-        store.commit(SET_USER, {user});
+            store.commit(SET_USER, {user});
+        }
+    }catch(e){
+        console.error(e.message)
     }
 
     next();

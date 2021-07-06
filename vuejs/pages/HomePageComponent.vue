@@ -18,17 +18,18 @@
         <SpinnerComponent/>
       </div>
   </BasicLayout>
-  <section id="cta" class="cta">
+  <div id="cta" class="cta w-100">
     <BasicLayout>
       <div class="container aos-init aos-animate" data-aos="zoom-in">
         <div class="text-center">
-          <h3>Call To Action</h3>
-          <p> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-          <a class="cta-btn" href="#">Call To Action</a>
+          <h2 class="mb text-white">
+            {{"Create your advertisement".toUpperCase()}}
+          </h2>
+          <a class="cta-btn" href="/create-ad">Learn more</a>
         </div>
       </div>
     </BasicLayout>
-  </section>
+  </div>
 </div>
 </template>
 

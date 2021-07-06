@@ -1,23 +1,29 @@
 <template>
-  <header id="header" class="fixed-top">
-    <div class="container d-flex align-items-center justify-content-between">
-
-      <h1 class="logo"><a href="index.html">InAds</a></h1>
-
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><router-link class="nav-link scrollto active" to="/">Home</router-link></li>
-          <li><a class="nav-link scrollto " href="/login" v-if="!isAuth">Login</a></li>
-          <li><a class="nav-link scrollto " href="/signup" v-if="!isAuth">Sign up</a></li>
-          <li><router-link class="nav-link scrollto " to="/create-ad" v-if="isAuth">Add an advertisement</router-link></li>
-          <li><router-link class="nav-link scrollto " to="/ads">Advertisements</router-link></li>
-          <li><router-link class="nav-link scrollto " to="/users">Users</router-link></li>
-          <li><router-link class="nav-link scrollto " :to="'/user/'+user.id" v-if="isAuth">Profile</router-link></li>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid justify-content-between">
+      <div class="navbar-brand">
+          <router-link to="/">
+            <h4>InAds</h4>
+          </router-link>
+      </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <router-link class="nav-link scrollto" to="/">Home</router-link>
+          </li>
+          <li class="nav-item" v-if="!isAuth"><a class="nav-link scrollto " href="/login">Login</a></li>
+          <li class="nav-item" v-if="!isAuth"><a class="nav-link scrollto " href="/signup">Sign up</a></li>
+          <li class="nav-item" v-if="isAuth"><router-link class="nav-link scrollto " to="/create-ad">Add an advertisement</router-link></li>
+          <li class="nav-item"><router-link class="nav-link scrollto " to="/ads">Advertisements</router-link></li>
+          <li class="nav-item"><router-link class="nav-link scrollto " to="/users">Users</router-link></li>
+          <li class="nav-item" v-if="isAuth"><router-link class="nav-link scrollto " :to="'/user/'+user.id" >Profile</router-link></li>
         </ul>
-        <i class="bi bi-list mobile-nav-toggle"></i>
-      </nav>
+      </div>
     </div>
-  </header>
+  </nav>
 </template>
 
 <script>
@@ -36,8 +42,42 @@ name: "HeaderComponent",
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../variables";
+
 .bg-white{
   background-color: white;
+}
+
+nav{
+  position: fixed !important;
+  top:0 !important;
+  left:0 !important;
+  width: 100% !important;
+  z-index: 88888888 !important;
+
+  >div{
+    padding: 0 $space !important;
+  }
+}
+
+.show ul{
+  display: flex !important;
+  min-height:90vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  li{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    padding: $space/2;
+  }
+
+  a{
+    font-size: 25px;
+    text-transform: uppercase;
+  }
 }
 </style>

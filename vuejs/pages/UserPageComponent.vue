@@ -16,34 +16,38 @@
       <div class="user__data mb">
         <FlexLayout>
           <div class="user__image card-sm">
-            <img :src="user.image" alt="..." class="mb" ref="img"/>
-            <div class="user__btn-download" v-if="isAllowed">
-              <div class="input-group mb-3">
-                <input type="file" class="form-control" id="inputGroupFile01" hidden ref="file" @change="uploadAvatar()">
-                <ButtonComponent @click="$refs.file.click()">Change the avatar</ButtonComponent>
-              </div>
-            </div>
-            <div class="user__btn-download" v-if="isAllowed">
-              <div class="input-group mb-3">
-                <ButtonComponent @click="updateProfile()">Update the profile</ButtonComponent>
-              </div>
-            </div>
+            <img :src="user.image" alt="..." ref="img"/>
           </div>
-          <div class="user__profile-info card-sm">
-            <FlexLayout>
-              <div>
-                <h6>Username: </h6>
-                <p :contenteditable="isAllowed" ref="username">{{user.username}}</p>
-              </div>
-              <div>
-                <h6>Role: </h6>
-                <p>{{user.role}}</p>
-              </div>
-            </FlexLayout>
-            <div>
-              <h6>About the user</h6>
-              <p :contenteditable="isAllowed" ref="description">{{user.description || "Hi! I have decided not to tell about myself"}}</p>
-            </div>
+          <div class="user__profile-container w-100">
+             <div class="user__profile-info card-sm mb w-100">
+               <FlexLayout>
+                 <div>
+                   <h6>Username: </h6>
+                   <p :contenteditable="isAllowed" ref="username">{{user.username}}</p>
+                 </div>
+                 <div>
+                   <h6>Role: </h6>
+                   <p>{{user.role}}</p>
+                 </div>
+               </FlexLayout>
+               <div>
+                 <h6>About the user</h6>
+                 <p :contenteditable="isAllowed" ref="description">{{user.description || "Hi! I have decided not to tell about myself"}}</p>
+               </div>
+             </div>
+             <div class="user__actions card-sm w-100 center justify-content-start">
+               <div class="user__btn-download mr-3" v-if="isAllowed">
+                 <div class="input-group">
+                   <input type="file" class="form-control" id="inputGroupFile01" hidden ref="file" @change="uploadAvatar()">
+                   <ButtonComponent @click="$refs.file.click()">Change the avatar</ButtonComponent>
+                 </div>
+               </div>
+               <div class="user__btn-download" v-if="isAllowed">
+                 <div class="input-group">
+                   <ButtonComponent @click="updateProfile()">Update the profile</ButtonComponent>
+                 </div>
+               </div>
+             </div>
           </div>
         </FlexLayout>
       </div>
@@ -102,7 +106,8 @@ export default {
       return parseInt(this.$route.params.id, 10);
     },
     isAllowed(){
-      return this.id === this.user.id || this.user.role === "admin" && this.id && this.user.id;
+      const user = this.$store.state.user;
+      return this.id === user.id || user.role === "admin" && user.id;
     }
   },
   async mounted(){
@@ -134,12 +139,8 @@ export default {
       let avatar = this.$refs.file.files[0];
       let formData = new FormData();
 
-      Object.entries({username, description, avatar}).forEach(([k, v]) => {
-        if(k === "file" && avatar){
-          formData.set(k, v, avatar.name);
-        } else {
-          formData.set(k, v);
-        }
+      Object.entries({username, description, avatar, id: this.id}).forEach(([k, v]) => {
+        formData.set(k, v);
       });
 
       const response = await fetch('/api/change-userdata', {
@@ -150,6 +151,8 @@ export default {
 
       if(json.status === "ok"){
         alert("Changes are saved");
+      } else {
+        alert("Failed to change the avatar");
       }
     },
     uploadAvatar(){
@@ -172,10 +175,11 @@ export default {
     object-fit: cover;
     width: 100%;
     height: 100%;
+    min-height: 200px;
   }
 }
 
-.user__profile-info {
+.user__profile-container{
   flex: 1 1 70%;
   max-width: 70%;
   width: 70%;

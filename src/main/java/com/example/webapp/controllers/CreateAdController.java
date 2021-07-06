@@ -52,7 +52,7 @@ public class CreateAdController{
     @RequireAuth
     protected void handleRequest(@Valid Ad ad,
                                  BindingResult bindingResult,
-                                 @RequestParam() MultipartFile photo,
+                                 @RequestPart() MultipartFile photo,
                                  Authentication authentication,
                                  HttpServletResponse response
                                 ) throws IOException {

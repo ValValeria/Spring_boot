@@ -14,11 +14,17 @@
     </BasicLayout>
     <div class="ads__area">
       <BasicLayout :title="'Our ads'" :is-section="false">
-        <div class="ads__search mb w-100 center" v-if="!isLoading">
+        <div class="ads__search mb w-100 center" >
           <form class="row w-100 card-sm center">
             <div>
               <label for="inputPassword2" class="visually-hidden">Search</label>
-              <input type="text" class="form-control" id="inputPassword2" placeholder="Type here ..." v-model="text">
+              <input
+                  type="text"
+                  class="form-control"
+                  id="inputPassword2"
+                  placeholder="Type here ..."
+                  :readonly="isLoading"
+                  v-model="text"/>
             </div>
             <div>
               <ButtonComponent @click="search($event)">
@@ -27,16 +33,36 @@
             </div>
           </form>
         </div>
-        <FlexLayout v-if="!isLoading">
-          <CardComponent
-              v-for="ad in ads"
-              :title="ad.title"
-              :description="ad.description"
-              :id="ad.id"
-              :image="ad.image"
-              :key="Math.random()"/>
-        </FlexLayout>
-        <SpinnerComponent v-else/>
+        <div class="ads__list w-100">
+          <FlexLayout v-if="!isLoading">
+            <CardComponent
+                v-for="ad in ads"
+                :title="ad.title"
+                :description="ad.description"
+                :id="ad.id"
+                :image="ad.image"
+                :key="Math.random()"/>
+          </FlexLayout>
+          <div v-if="!isLoading && !ads.length" class="w-100 center mt">
+             <h5>No results</h5>
+          </div>
+          <SpinnerComponent v-if="isLoading"/>
+        </div>
+        <div class="ads__pagination mt center w-100" v-if="allPages > 1">
+          <nav>
+            <ul class="pagination">
+              <li class="page-item" v-if="page">
+                <div class="page-link" @click="changePage(page-1)">Previous</div>
+              </li>
+              <li class="page-item" v-for="n in allPages" :key="Math.random()">
+                <div :class="'page-link ' + (n-1===page ? 'active' : '')" @click="changePage(n-1)">{{n}}</div>
+              </li>
+              <li class="page-item" v-if="allPages > page+1">
+                <div class="page-link" @click="changePage(page+1)">Next</div>
+              </li>
+            </ul>
+          </nav>
+        </div>
       </BasicLayout>
     </div>
   </div>
@@ -56,37 +82,52 @@ export default {
       isLoading: true,
       ads: [],
       page: 0,
-      size: 10,
-      text: ""
+      size: 3,
+      text: "",
+      allPages: 0,
+      isSearch: false
     }
   },
   components: {
     FlexLayout, CardComponent, SpinnerComponent, BasicLayout, ButtonComponent
   },
   async mounted(){
-    const response = await fetch(`/api/ads/?size=${this.size}&page=${this.page}`);
+    const url = `/api/ads/?size=${this.size}&page=${this.page}`;
 
-    if(response.ok){
-      const data = await response.json();
-
-      this.ads = data.data.pagination.content;
-      this.isLoading = false;
-    }
+    await this.makeHttpRequest(url);
   },
   methods: {
     async search($event){
       $event.preventDefault();
 
+      this.isSearch = true;
+
+      await this.makeHttpRequest(`/api/search/ads?page=${this.page}&size=${this.size}&search=${encodeURIComponent(this.text)}`);
+    },
+    async makeHttpRequest(url){
       this.isLoading = true;
 
-      const url = `/api/search/ads?page=${this.page}&size=${this.size}&search=${encodeURIComponent(this.text)}`;
       const response = await fetch(url);
 
       if(response.ok){
         const data = await response.json();
-        this.ads = data.data.results.content;
+        const paginationData = data.data.pagination;
+
+        this.allPages = paginationData.totalPages;
+        this.ads = paginationData.content;
         this.isLoading = false;
       }
+    },
+    async changePage(page){
+      this.page = page;
+
+      let url = `/api/ads?page=${this.page}&size=${this.size}`;
+
+      if(this.isSearch){
+        url += `&search=${encodeURIComponent(this.text)}`;
+      }
+
+      await this.makeHttpRequest(url);
     }
   }
 }
@@ -111,10 +152,13 @@ form div:nth-child(1){
 .ads__area{
   min-height: 40vh;
 }
-</style>
 
-<style>
-.ads .flex-layout__items{
-  justify-content: flex-start !important;
+li .active{
+  background-color: #2487ce;
+  color: white;
+}
+
+.ads__list{
+  min-height:40vh;
 }
 </style>

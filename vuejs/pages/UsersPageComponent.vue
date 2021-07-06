@@ -29,7 +29,7 @@
           </form>
         </div>
         <div class="users__list center">
-          <FlexLayout v-if="users.length">
+          <FlexLayout v-if="users.length && !isLoading">
             <div class="users__item" v-for="user in users">
               <CardComponent
                   :title="user.username"
@@ -42,9 +42,25 @@
               />
             </div>
           </FlexLayout>
-          <div v-if="isSearch && !users.length">
-            <h6 class="mt">No results. Sorry :(</h6>
+          <div v-if="!isLoading && !users.length" class="w-100 center mt">
+            <h5>No results</h5>
           </div>
+          <SpinnerComponent v-if="isLoading"/>
+        </div>
+        <div class="users__pagination w-100 center mt"  v-if="allPages > 1">
+          <nav>
+            <ul class="pagination">
+              <li class="page-item" v-if="page">
+                <div class="page-link" @click="changePage(page-1)">Previous</div>
+              </li>
+              <li class="page-item" v-for="n in allPages" :key="Math.random()">
+                <div :class="'page-link ' + (n-1===page ? 'active' : '')" @click="changePage(n-1)">{{n}}</div>
+              </li>
+              <li class="page-item" v-if="allPages > page+1">
+                <div class="page-link" @click="changePage(page+1)">Next</div>
+              </li>
+            </ul>
+          </nav>
         </div>
       </BasicLayout>
     </div>
@@ -56,26 +72,26 @@ import BasicLayout from "../layouts/BasicLayout";
 import ButtonComponent from "../components/ButtonComponent";
 import FlexLayout from "../layouts/FlexLayout";
 import CardComponent from "../components/CardComponent";
+import SpinnerComponent from "../components/SpinnerComponent";
 
 export default {
   name: "UsersPageComponent",
-  components: {FlexLayout, ButtonComponent, BasicLayout, CardComponent},
+  components: {FlexLayout, ButtonComponent, BasicLayout, CardComponent, SpinnerComponent},
   data: function(){
     return {
       page: 0,
       size: 3,
       users: [],
       searchText: "",
-      isSearch: false
+      isSearch: false,
+      allPages: 0,
+      isLoading: true
     }
   },
   async mounted(){
-     const response = await fetch(`/api/users?page=${this.page}&size=${this.size}`);
+     const url = `/api/users?page=${this.page}&size=${this.size}`;
 
-     if(response.ok){
-       const data = await response.json();
-       this.users = data.data.pagination.content;
-     }
+     await this.makeHttpRequest(url);
   },
   methods:{
     async search($event){
@@ -85,16 +101,38 @@ export default {
       this.isSearch = true;
 
       const url = `/api/search/user?page=${this.page}&size=${this.size}&search=${encodeURIComponent(this.searchText)}`;
-      const response = await fetch(url);
 
-      if(response.ok){
-        const data = await response.json();
-        this.users = data.data.results.content;
-      }
+      await this.makeHttpRequest(url);
     },
 
     clearPaginationData(){
       this.page = 0;
+    },
+
+    async makeHttpRequest(url){
+      this.isLoading = true;
+
+      const response = await fetch(url);
+
+      if(response.ok){
+        const data = await response.json();
+        const paginationData = data.data.pagination;
+
+        this.allPages = paginationData.totalPages;
+        this.users = paginationData.content;
+        this.isLoading = false;
+      }
+    },
+    async changePage(page){
+      this.page = page;
+
+      let url = `/api/users?page=${this.page}&size=${this.size}`;
+
+      if(this.isSearch){
+        url += `&search=${encodeURIComponent(this.text)}`;
+      }
+
+      await this.makeHttpRequest(url);
     }
   }
 }
@@ -118,5 +156,10 @@ form div:nth-child(1){
 
 .users__area{
   min-height: 40vh;
+}
+
+li .active{
+  background-color: #2487ce;
+  color: white;
 }
 </style>

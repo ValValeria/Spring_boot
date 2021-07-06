@@ -34,10 +34,10 @@
           <div class="w-100  loginbttm">
             <div class="w-100 login-btm login-text">
              <ul class="list-group">
-               <li class="list-group-item list-group-item-primary" v-if="isAdded">
+               <li class="list-group-item list-group-item-primary mb" v-if="isAdded">
                   Your advertisement is successfully added
                </li>
-               <li class="list-group-item list-group-item-danger" v-if="isError">
+               <li class="list-group-item list-group-item-danger mb" v-if="isError">
                   Please, check the validity of fields
                </li>
              </ul>

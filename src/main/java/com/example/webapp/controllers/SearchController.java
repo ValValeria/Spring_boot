@@ -41,7 +41,7 @@ public class SearchController {
 
         page.getContent().forEach(User::clearAds);
 
-        this.objectApiResponse.setData(Map.of("results", page));
+        this.objectApiResponse.setData(Map.of("pagination", page));
 
         return this.conversionService.convert(objectApiResponse, String.class);
     }
@@ -53,7 +53,7 @@ public class SearchController {
 
         page.getContent().forEach(v -> v.getUser().clearAds());
 
-        this.objectApiResponse.setData(Map.of("results", page));
+        this.objectApiResponse.setData(Map.of("pagination", page));
 
         return this.conversionService.convert(objectApiResponse, String.class);
     }

@@ -88,6 +88,8 @@ public class UserController {
             } else {
                this.objectApiResponse.setErrors(List.of("You can't update the data of other users"));
             }
+        } else {
+            this.objectApiResponse.setErrors(List.of("The user doesn't exist"));
         }
 
         return this.conversionService.convert(objectApiResponse, String.class);
@@ -143,6 +145,7 @@ public class UserController {
     public String getCurrentlyAuthenticatedUser(Authentication authentication){
         if(authentication != null && authentication.isAuthenticated()){
             User user = userRepository.findUserByUsername(authentication.getName());
+            user.clearAds();
             this.objectApiResponse.setData(Map.of("user", user));
         }
 

@@ -66,3 +66,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.card-sm{
+  min-width: 200px;
+  max-width: 400px;
+}
+</style>
